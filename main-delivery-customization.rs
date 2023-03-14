@@ -6,9 +6,25 @@ generate_types!(
     query_path = "./input.graphql",
     schema_path = "./schema.graphql"
 );
+
 // Use the shopify_function crate to declare your function entrypoint
 #[shopify_function]
 fn function(input: input::ResponseData) -> Result<output::FunctionResult> {
+
+    let no_removal = output::FunctionResult { operations: vec![] };
+
+let targets: Vec<_> = input.cart.lines
+.iter()
+.filter_map(|line| match &line.merchandise {
+    input::InputCartLinesMerchandise::ProductVariant(variant) => Some(variant),
+    input::InputCartLinesMerchandise::CustomProduct => None,
+})
+.filter(|variant| variant.product.has_preorder)
+.collect();
+
+if targets.is_empty() {
+    return Ok(no_removal)
+}
 
 let to_remove = input.cart.delivery_groups
     .iter()
@@ -34,5 +50,3 @@ let to_remove = input.cart.delivery_groups
 
 #[cfg(test)]
 mod tests;
-
-// Map { iter: Iter([InputCartDeliveryGroups { delivery_address: Some(InputCartDeliveryGroupsDeliveryAddress { province_code: Some("IL") }), delivery_options: [InputCartDeliveryGroupsDeliveryOptions { handle: "b1c2e7620124ab4fbc9323bc64c4e92c-9e912b3dae9b0e04b6f1facf08aa7cb2", title: Some("Economy") }, InputCartDeliveryGroupsDeliveryOptions { handle: "b1c2e7620124ab4fbc9323bc64c4e92c-ee768830e386b87e4f230f4292c237a3", title: Some("Standard") }] }]) }
