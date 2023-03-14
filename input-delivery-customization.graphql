@@ -1,0 +1,30 @@
+query Input ($preorderTags: [String!] = []) {
+  cart {
+    deliveryGroups {
+      deliveryAddress {
+        provinceCode
+      }
+      deliveryOptions {
+        handle
+        title
+      }
+    }
+    lines {
+      id
+      merchandise {
+        __typename
+        ... on ProductVariant {
+          id
+          product {
+            hasPreorder: hasAnyTag(tags: $preorderTags)
+          }
+        }
+      }
+    }
+  }
+  deliveryCustomization {
+    metafield(namespace: "$app:delivery-customization", key: "function-configuration") {
+      value
+    }
+  }
+}
