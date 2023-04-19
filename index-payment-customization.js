@@ -22,7 +22,8 @@ const targets = input.cart.lines
     .filter(line => line.merchandise.__typename == "ProductVariant")
     .filter(line => { 
       const variant = /** @type {ProductVariant} */ (line.merchandise);
-      return variant.product.id == "gid://shopify/Product/8171596185886"
+      // change this to "Virtual Gift Cards" like in script
+      return variant.product.productType == "snowboard"
     })
 
     if (!targets.length) {
