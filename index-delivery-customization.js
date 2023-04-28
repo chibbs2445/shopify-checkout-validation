@@ -33,13 +33,14 @@ export default
     let toHide = input.cart.deliveryGroups
       // Collect the delivery options from these groups
       .flatMap(group => group.deliveryOptions)
-      .filter(option => option.title == "Economy")
+      .filter(option => option.cost.amount == 0)
       // Construct a rename operation for each, adding the message to the option title
       .map(option => /** @type {Operation} */({
         hide: {
           deliveryOptionHandle: option.handle,
         }
       }));
+      console.log('to hide', toHide)
 
     // The @shopify/shopify_function package applies JSON.stringify() to your function result
     // and writes it to STDOUT
