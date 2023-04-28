@@ -7,6 +7,9 @@ query Input ($preorderTags: [String!] = []) {
       deliveryOptions {
         handle
         title
+        cost {
+          amount
+        }
       }
     }
     lines {
