@@ -1,9 +1,9 @@
 import React from 'react';
 import {Tile, Text, Screen, Navigator, render, useExtensionApi, FormattedTextField, Button, useCartSubscription} from '@shopify/retail-ui-extensions-react';
 
+
 const SmartGridTile = () => {
   const api = useExtensionApi();
-
 
   return (
     <Tile
@@ -17,30 +17,30 @@ const SmartGridTile = () => {
   );
 };
 
-const smartGridTest = (customerName, customerEmail) => {
-  const data = {
-    name: customerName,
-    email: customerEmail
-  };
+const smartGridTest = () => {
 
-  fetch('https://webhook.site/9ee8dab6-2ed1-4571-9066-eb04c6391c56', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json' // Set the appropriate content-type if sending JSON data
-  },
-  body: JSON.stringify(data) // Replace with the data you want to send in the request body
-})
-  .then(response => {
-    if (response.ok) {
-      console.log('POST request succeeded');
-    } else {
-      console.error('POST request failed');
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+  const options = {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      'x-guid': 'Wf3-OhFFSz3SSkxMK0-svQ',
+      'x-api-key': '0Vk3vXr8TALtTUtCbck6Qwtt',
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: 'chibbs+25@rothys.com',
+      first_name: 'Cecily',
+      last_name: 'Hibbs',
+      opted_in: true
+    })
+  };
+  
+  fetch('https://loyalty.yotpo.com/api/v2/customers', options)
+    .then(response => response.json())
+    .then(response => console.log(response))
+    .catch(err => console.error(err));
 }
+
 
 const SmartGridModal = () => {
   const cart = useCartSubscription();
@@ -52,11 +52,8 @@ const SmartGridModal = () => {
     <Navigator>
       <Screen name="Enroll Customer" title="Enroll Customer">
         <Text>Enroll Customer: {customerEmail}</Text>
-        <Button title="Enroll" type="primary" onPress={() => {
-          smartGridTest(customerName, customerEmail)
-          api.toast.show('Customer enrolled!')
-        }
-        }></Button>
+        <Button title="Enroll" type="primary" onPress={smartGridTest}>
+        </Button>
       </Screen>
     </Navigator>
   );
@@ -64,6 +61,3 @@ const SmartGridModal = () => {
 
 render('pos.home.tile.render', () => <SmartGridTile />);
 render('pos.home.modal.render', () => <SmartGridModal />);
-
-
-
